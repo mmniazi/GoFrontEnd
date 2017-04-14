@@ -9,9 +9,10 @@ import (
 	pb "../proto"
 	"github.com/go-redis/redis"
 	"encoding/json"
+	"os"
 )
 
-const address = "localhost:50051"
+const address = "spellchecker:50051"
 const REDIS_KEY = "messages"
 
 var clients = make(map[*websocket.Conn]bool) // connected clients
@@ -36,7 +37,9 @@ type Message struct {
 
 func main() {
 	// Create a simple file server
-	fs := http.FileServer(http.Dir("public"))
+	cwd , _ := os.Getwd()
+	log.Println(cwd + "/public")
+	fs := http.FileServer(http.Dir(cwd + "/public"))
 	http.Handle("/", fs)
 
 	// Configure websocket route
@@ -74,7 +77,7 @@ func connectToSpellChecker() {
 
 func connectToRedis() {
 	redisClient = redis.NewClient(&redis.Options{
-		Addr:     "localhost:6379",
+		Addr:     "redis:6379",
 		Password: "", // no password set
 		DB:       0,  // use default DB
 	})

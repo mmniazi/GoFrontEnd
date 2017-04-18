@@ -1,0 +1,16 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: gofrontend
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: gofrontend
+    spec:
+      containers:
+      - name: gofrontend
+        image: mmniazi/go-frontend:latest
+        ports:
+        - containerPort: 8000

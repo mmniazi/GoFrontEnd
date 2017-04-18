@@ -11,8 +11,6 @@ import (
 	"encoding/json"
 	"os"
 )
-
-const address = "spellchecker:50051"
 const REDIS_KEY = "messages"
 
 var clients = make(map[*websocket.Conn]bool) // connected clients
@@ -65,7 +63,14 @@ func main() {
 
 func connectToSpellChecker() {
 	// Set up a connection to the server.
+
+	log.Println("Trying to connect to grpc server at: " +
+		os.Getenv("SPELLCHECKER_SERVICE_HOST") + ":" +
+		os.Getenv("SPELLCHECKER_SERVICE_PORT"))
+
 	var err error
+	var address = os.Getenv("SPELLCHECKER_SERVICE_HOST") + ":" + os.Getenv("SPELLCHECKER_SERVICE_PORT")
+
 	grpcConn, err = grpc.Dial(address, grpc.WithInsecure())
 	if err != nil {
 		log.Fatalf("did not connect: %v", err)
@@ -76,8 +81,12 @@ func connectToSpellChecker() {
 }
 
 func connectToRedis() {
+	log.Println("Trying to connect to redis at: " +
+		os.Getenv("REDIS_SERVICE_HOST") + ":" +
+		os.Getenv("REDIS_SERVICE_PORT"))
+
 	redisClient = redis.NewClient(&redis.Options{
-		Addr:     "redis:6379",
+		Addr:      os.Getenv("REDIS_SERVICE_HOST") + ":" + os.Getenv("REDIS_SERVICE_PORT"),
 		Password: "", // no password set
 		DB:       0,  // use default DB
 	})

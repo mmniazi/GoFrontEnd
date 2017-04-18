@@ -1,0 +1,16 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: spellchecker
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: spellchecker
+    spec:
+      containers:
+      - name: spellchecker
+        image: mmniazi/spellchecker:latest
+        ports:
+        - containerPort: 50051
